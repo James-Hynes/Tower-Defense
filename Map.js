@@ -107,6 +107,18 @@ class Map {
         return neighbors;
     }
     
+    getAllUndefinedGridPaths() {
+        let undefinedGridPaths = {};
+        for(let row in this.tiles) {
+            for(let tile of this.tiles[row]) {
+                if(!tile.gridPos.toString() in this.gridpaths) {
+                    undefinedGridPaths[tile.gridPos.toString()] = tile;
+                }
+            }
+        }
+        return undefinedGridPaths;
+    }
+    
     getAllSpawners() {
         let spawners = {};
         for(let row in this.tiles) {
@@ -117,6 +129,18 @@ class Map {
             }
         }
         return spawners;
+    }
+    
+    getAllUnoccupied() {
+       let unoccupied = {};
+        for(let row in this.tiles) {
+            for(let tile of this.tiles[row]) {
+                if(!tile.occupied) {
+                    spawners[tile.gridPos.toString()] = tile;
+                }
+            }
+        }
+        return unoccupied; 
     }
     
     getAllTowers() {
@@ -259,7 +283,6 @@ class Map {
             }
             allPaths.push(p);
         }
-        
         return allPaths;
     }
     
@@ -483,6 +506,10 @@ class Map {
             this.chooseDestinationPoint(finalPath);
             this.chooseSpawnPoints(finalPath, Math.floor(random(1, 3)));
             this.createGridPaths(); 
+            
+            if(!finalPath.length > (this.width * this.height) / 3 || Object.keys(this.gridpaths).length >= (this.width * this.height) / 3) {
+                this.generateNewLevel();
+            }
         } catch(e) {
             this.generateNewLevel();
         }

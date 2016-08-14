@@ -24,7 +24,11 @@ class Enemy extends Sprite {
     findNextMovement() {
         let currTile = this.findGridPos();
         let nextTile = game.map.gridpaths[currTile.toString()];
-        if(nextTile === false || nextTile === undefined) {
+        if(nextTile === undefined) {
+            game.removeEnemy(this);
+            return false;
+        } else if(nextTile === false) {
+            game.lives--;
             game.removeEnemy(this);
             return false;
         }
@@ -36,6 +40,7 @@ class Enemy extends Sprite {
         this.health -= damage;
         if(this.health <= 0) {
             game.removeEnemy(this);
+            game.addMoney(this.maxHealth);
         }
     }
     

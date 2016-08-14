@@ -1,13 +1,17 @@
 let game;
 let fonts = {};
+let images = {};
 
 function preload() {
     fonts['ken_bold'] = loadFont('assets/Kenney Bold.ttf');
+    fonts['ken_pixel'] = loadFont('assets/Kenney Pixel.ttf');
+    fonts['ken_space'] = loadFont('assets/Kenney Space.ttf');
+    images['blue_button01'] = loadImage('assets/blue_button01.png');
 }
 
 function setup() {
     debugSetup();
-    game = new Game(30, 10, 30);
+    game = new Game(40, 15, 30);
 }
 
 function draw() {
@@ -31,6 +35,12 @@ function mouseReleased() {
 function mousePressed() {
     if(game.debug) {
         handleDebugMousePress(); 
+    } else if(game.wave < 0) {
+        if(game.introTextDisplayInfo['maxy'] - game.introTextDisplayInfo['ypos'] >= 0.03) {
+            game.introTextDisplayInfo['ypos'] = game.introTextDisplayInfo['maxy'];
+            game.introTextDisplayInfo['rot'] = game.introTextDisplayInfo['dir'];
+        }
+        game.gameStartMouseClick();
     }
 }
 
