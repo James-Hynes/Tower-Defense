@@ -6,18 +6,17 @@ class Game {
         this.enemies = [];
         this.lasers = [];
         
-        this.wave = -1;
+        this.wave = 0;
         this.money = 0;
         this.lives = 100;
         
-        this.introTextDisplayInfo = {ypos: 0, maxy: 125, rot: 0, dir: ((TWO_PI * 2) - (QUARTER_PI / 4) * ((Math.random() < 0.5) ? 1 : -1))};
-        this.introButtonDisplayInfo = {color: 0};
-        this.introScreenTranslateY =  0;
         createCanvas(windowWidth, windowHeight);
+        
+//        this.start();
     }
     
     display() {
-        if(this.wave >= 0) {
+        if(this.wave > 0) {
             START_BLOCK('Draw Map');
             this.map.display();
             END_BLOCK('Draw Map');
@@ -27,12 +26,7 @@ class Game {
             START_BLOCK('Draw Lasers');
             this.lasers.forEach((b) => b.display() );
             END_BLOCK('Draw Lasers'); 
-            
             this.drawLevelInfo();
-        } else {
-            background('#80c6d3');
-            this.drawIntroText();
-               
         }
     }
     
@@ -54,59 +48,19 @@ class Game {
         pop();
     }
     
-    drawIntroText() {
-        push();
-        textSize(50);
-        textFont(fonts['ken_bold']);
-        fill(0);
-        textAlign(CENTER);
-        this.introTextDisplayInfo['ypos'] = lerp(this.introTextDisplayInfo['ypos'], this.introTextDisplayInfo['maxy'], 0.05);
-        this.introTextDisplayInfo['rot'] = lerp(this.introTextDisplayInfo['rot'], this.introTextDisplayInfo['dir'], 0.03);
-        translate(windowWidth / 2, this.introTextDisplayInfo['ypos']);
-        rotate(this.introTextDisplayInfo['rot']);
-        text('TOWER DEFENSE', 0, 0);
-        if(this.introTextDisplayInfo['maxy'] - this.introTextDisplayInfo['ypos'] <= 0.03) {
-            textSize(23);
-            text('Proof of Concept', 0, 40);
-        }
-        pop();
-        
-        push();
-        imageMode(CENTER);
-        image(images['blue_button01'], windowWidth / 2, windowHeight - 100);
-        textAlign(CENTER);
-        textFont(fonts['ken_bold']);
-        textSize(20);
-        fill(this.introButtonDisplayInfo['color']);
-        text('START', windowWidth / 2, windowHeight - 110 + (images['blue_button01'].height / 2));
-        pop();
-    }
-    
     update() {
-        if(this.wave >= 0) {
+        if(this.wave > 0) {
             START_BLOCK('Enemy Logic');
             this.enemies.forEach((e) => e.update() );
             END_BLOCK('Enemy Logic');
             START_BLOCK('Debug Handling');
             debugUpdate();
             END_BLOCK('Debug Handling'); 
-        } else {
-            if((mouseX >= (windowWidth / 2) - (images['blue_button01'].width / 2) && mouseX <= (windowWidth / 2) + (images['blue_button01'].width / 2)) && (mouseY >= (windowHeight - 100) - (images['blue_button01'].height / 2) && mouseY <= (windowHeight - 100) + (images['blue_button01'].height / 2)) ) {
-                this.introButtonDisplayInfo['color'] = 255;
-            } else {
-                this.introButtonDisplayInfo['color'] = 0;
-            }
         }
     }
-    
-    gameStartMouseClick() {
-        if((mouseX >= (windowWidth / 2) - (images['blue_button01'].width / 2) && mouseX <= (windowWidth / 2) + (images['blue_button01'].width / 2)) && (mouseY >= (windowHeight - 100) - (images['blue_button01'].height / 2) && mouseY <= (windowHeight - 100) + (images['blue_button01'].height / 2)) ) {
-            this.start();
-        }
-    }
+
     start() {
         this.map.generateNewLevel();
-        this.wave = 1;
     }
     
     removeEnemy(e) {
@@ -115,5 +69,17 @@ class Game {
     
     addMoney(amt) {
         this.money += amt;
+    }
+
+    nextWave() {
+        this.wave++;
+        let spawners = game.map.getAllSpawners();
+        let numSpawners = Object.keys(spawners).length;
+        for(let i = 0; i < (Math.floor(((this.wave) * 5) / numSpawners)); i++) {
+            for(let spawn in spawners) {
+                spawners[spawn].queue.push({numEnemies: 1, delay: Math.floor(random(400, 600)), queueDelay: 1000});
+            }
+        }
+        
     }
 }

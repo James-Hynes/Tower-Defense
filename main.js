@@ -10,7 +10,7 @@ function preload() {
 }
 
 function setup() {
-    debugSetup();
+//    debugSetup();
     game = new Game(40, 15, 30);
 }
 
@@ -35,18 +35,13 @@ function mouseReleased() {
 function mousePressed() {
     if(game.debug) {
         handleDebugMousePress(); 
-    } else if(game.wave < 0) {
-        if(game.introTextDisplayInfo['maxy'] - game.introTextDisplayInfo['ypos'] >= 0.03) {
-            game.introTextDisplayInfo['ypos'] = game.introTextDisplayInfo['maxy'];
-            game.introTextDisplayInfo['rot'] = game.introTextDisplayInfo['dir'];
-        }
-        game.gameStartMouseClick();
+    } else {
+        game.start();
     }
 }
 
 function mouseWheel(event) {
     handleDebugMouseWheel(event.delta);
-    console.log(event);
 }
 
 function keyPressed() {
