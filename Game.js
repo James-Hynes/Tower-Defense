@@ -41,17 +41,33 @@ class Game {
         strokeWeight(3);
         fill(0);
         
-        text(`Wave - ${this.wave}`, ((windowWidth - r) / 2) + r, 35);
-        text(`Money - ${this.money}`, ((windowWidth - r) / 2) + r, 70);
-        text(`Lives - ${this.lives}`, ((windowWidth - r) / 2) + r, 105);
+        // text(`Wave - ${this.wave}`, ((windowWidth - r) / 2) + r, 35);
+        // text(`Money - ${this.money}`, ((windowWidth - r) / 2) + r, 70);
+        // text(`Lives - ${this.lives}`, ((windowWidth - r) / 2) + r, 105);
         
         pop();
+    }
+
+    checkEndWave() {
+        if(this.enemies.length > 0) {
+            return false;
+        }
+        let spawners = this.map.getAllSpawners();
+
+        for(let spawner of Object.keys(spawners)) {
+            if(spawners[spawner].queue.length > 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
     
     update() {
         if(this.wave > 0) {
             START_BLOCK('Enemy Logic');
             this.enemies.forEach((e) => e.update() );
+            if(this.checkEndWave()) {this.nextWave();}
             END_BLOCK('Enemy Logic');
             START_BLOCK('Debug Handling');
             debugUpdate();
@@ -59,8 +75,12 @@ class Game {
         }
     }
 
-    start() {
+    start(w, h, t) {
+        if(w) this.map.width = w;
+        if(h) this.map.height = h;
+        if(t) { this.map.tilesize = t; this.tilesize = t; }
         this.map.generateNewLevel();
+        this.nextWave();
     }
     
     removeEnemy(e) {

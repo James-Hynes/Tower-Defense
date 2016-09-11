@@ -515,6 +515,12 @@ class Map {
         }
         
     }
+    
+    checkEnemiesLeft() {
+        for(let spawner of this.getAllSpawners()) {
+            console.log(spawner);
+        }
+    }
 }
 
 // only used with kruskal algorithm
