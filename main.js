@@ -3,12 +3,8 @@ let fonts = {};
 let images = {};
 
 function setup() {
-//    debugSetup();
-if(document.target.href.includes('.html')) {
     game = new Game(40, 15, 30);
     game.start();
-}
-    
 }
 
 function draw() {
