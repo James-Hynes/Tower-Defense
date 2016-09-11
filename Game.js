@@ -33,19 +33,6 @@ class Game {
     drawLevelInfo() {
         let r = (this.map.width * this.tilesize),
             b = (this.map.height * this.tilesize);
-        
-        push();
-        textAlign(CENTER);
-        textSize(15);
-        textFont(fonts['ken_space']);
-        strokeWeight(3);
-        fill(0);
-        
-        // text(`Wave - ${this.wave}`, ((windowWidth - r) / 2) + r, 35);
-        // text(`Money - ${this.money}`, ((windowWidth - r) / 2) + r, 70);
-        // text(`Lives - ${this.lives}`, ((windowWidth - r) / 2) + r, 105);
-        
-        pop();
     }
 
     checkEndWave() {

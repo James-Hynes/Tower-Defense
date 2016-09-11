@@ -2,13 +2,6 @@ let game;
 let fonts = {};
 let images = {};
 
-function preload() {
-    fonts['ken_bold'] = loadFont('assets/Kenney Bold.ttf');
-    fonts['ken_pixel'] = loadFont('assets/Kenney Pixel.ttf');
-    fonts['ken_space'] = loadFont('assets/Kenney Space.ttf');
-    images['blue_button01'] = loadImage('assets/blue_button01.png');
-}
-
 function setup() {
 //    debugSetup();
 if(document.target.href.includes('.html')) {
