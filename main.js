@@ -4,7 +4,9 @@ let images = {};
 
 function setup() {
     game = new Game(40, 15, 30);
-    game.start();
+   game.start();
+    // console.log(Delaunay.triangulate([1, 2], [4, 5], [2, 3]))
+    //  game.map.showDelaunayTriangulation();
 }
 
 function draw() {
@@ -13,7 +15,6 @@ function draw() {
     game.display();
     game.update();
     END_BLOCK('gameLoop');
-    
     if(game.debug) {
         drawTable();
     }

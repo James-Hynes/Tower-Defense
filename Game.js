@@ -11,22 +11,24 @@ class Game {
         this.lives = 100;
         
         createCanvas(windowWidth, windowHeight);
-        
 //        this.start();
     }
     
     display() {
         if(this.wave > 0) {
-            START_BLOCK('Draw Map');
-            this.map.display();
-            END_BLOCK('Draw Map');
-            START_BLOCK('Draw Enemies');
-            this.enemies.forEach((e) => e.display() );
-            END_BLOCK('Draw Enemies');
-            START_BLOCK('Draw Lasers');
-            this.lasers.forEach((b) => b.display() );
-            END_BLOCK('Draw Lasers'); 
-            this.drawLevelInfo();
+            if(this.map.mode === 'showDelaunay' || this.map.mode === 'standard') {
+                START_BLOCK('Draw Map');
+                this.map.display();
+                END_BLOCK('Draw Map');
+            }
+            if(this.map.mode === 'standard') {
+                START_BLOCK('Draw Enemies');
+                this.enemies.forEach((e) => e.display() );
+                END_BLOCK('Draw Enemies');
+                START_BLOCK('Draw Lasers');
+                this.lasers.forEach((b) => b.display() );
+                END_BLOCK('Draw Lasers');  
+            }
         }
     }
     

@@ -7,6 +7,11 @@ class Map {
         this.tilesize = tilesize;
         
         this.tiles = [];
+
+        this.mode = 'standard';
+
+        // for testing
+        this.chosenRooms = [];
         
         if(!design) {
             this.destinationTilePos = [3, 3];
@@ -171,20 +176,22 @@ class Map {
         for(let row in this.tiles) {
             for(let col in this.tiles[row]) {
                 let currTile = this.tiles[row][col];
-                if(currTile.occupied) {
-                    currTile.display();
-                    currTile.update();
-                } else {
-                    if(this.gridpaths[currTile.gridPos] === undefined) {
-                        fill('#9d9d8e');
+                    if(currTile.occupied && this.mode === 'standard') {
+                        currTile.display();
+                        currTile.update();
                     } else {
-                        fill('#CCBFB3');
+                        if(this.chosenRooms.indexOf([row, col].toString()) !== -1) {
+                            fill('#839292');
+                        } else if(this.gridpaths[currTile.gridPos] === undefined) {
+                            fill('#9d9d8e');
+                        } else {
+                            fill('#CCBFB3');
+                        }
+                        rect(currTile.col * this.tilesize, currTile.row * this.tilesize, this.tilesize, this.tilesize);
                     }
-                    rect(currTile.col * this.tilesize, currTile.row * this.tilesize, this.tilesize, this.tilesize);
-                }
             }
         }
-        
+    }
         
 //        for(let i = 0; i < this.generatedLevel.length; i++) {
 //            let tileA = this.generatedLevel[i][0],
@@ -212,7 +219,7 @@ class Map {
 //                }
 //            }
 //        }
-    }
+
     
     clear() {
         for(let row = 0; row < this.height; row++) {  
@@ -316,7 +323,7 @@ class Map {
                             newPathParts.push(this.tiles[curr_pos[0] + ((i + 1) * ((yDiff > 0) ? 1 : -1))][curr_pos[1] + ((absxDiff) * ((xDiff > 0) ? 1 : -1))]);
                         }
                     } 
-                    else 
+                    else
                     {
                         for(let i = 0; i < absxDiff; i++) 
                         {
@@ -520,6 +527,42 @@ class Map {
         for(let spawner of this.getAllSpawners()) {
             console.log(spawner);
         }
+    }
+
+    showDelaunayTriangulation() {
+        this.chosenRooms = [];
+        this.mode = 'showDelaunay';
+        this.triangles = [];
+
+        let rooms;
+        let tileCenters = [];
+        let i = 0;
+        let newRooms = setInterval(() => {
+            if(i < 15) {
+               let room = [Math.floor(Math.random() * this.height), Math.floor(Math.random() * this.width)];
+               while(this.chosenRooms.indexOf(room) !== -1) {
+                room = [Math.floor(Math.random() * this.height), Math.floor(Math.random() * this.width)];
+            }
+            this.chosenRooms.push(room);
+            i++; 
+            } else {
+                this.triangles = this.getDelaunayTriangulation(this.chosenRooms);
+                rooms = this.chosenRooms.map((r) => { return this.tiles[r[0]][r[1]] });
+                let tileCenters = [];
+                for(let room of this.chosenRooms) {
+                    let tile = this.tiles[room[0]][room[1]];
+                    tileCenters.push([tile.col * game.tilesize + (game.tilesize / 2), tile.row * game.tilesize + (game.tilesize / 2)]);
+                }
+                clearInterval(newRooms);
+            }
+        }, 500);
+        let j = 0;
+        let delaunayTriangles = setInterval(() => {
+            if(this.chosenRooms.length === 15) {
+                this.triangles.push([rooms[this.triangles[i]], rooms[this.triangles[i + 1]], rooms[this.triangles[i + 2]]]);
+            }
+        }, 500);
+        // 
     }
 }
 
